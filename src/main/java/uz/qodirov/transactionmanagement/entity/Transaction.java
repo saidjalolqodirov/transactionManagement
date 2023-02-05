@@ -1,0 +1,29 @@
+package uz.qodirov.transactionmanagement.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.*;
+
+/**
+ * @author: Saidjalol Qodirov 2/5/2023 8:19 PM
+ */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class Transaction implements BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @OneToOne
+    private Offer offer;
+    @OneToOne
+    private Request request;
+    @OneToOne
+    private Carrier carrier;
+    private int score;
+}
