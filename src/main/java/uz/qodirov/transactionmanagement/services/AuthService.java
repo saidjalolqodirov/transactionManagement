@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.qodirov.transactionmanagement.dto.auth.RegisterDTO;
 import uz.qodirov.transactionmanagement.entity.Users;
@@ -20,6 +21,7 @@ public class AuthService extends AbstractService<UserRepository, UserMapper> imp
 
     private final RegionRepository regionRepository;
 
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final UserRepository userRepository;
 
     protected AuthService(UserRepository repository, UserMapper mapper, RegionRepository regionRepository, UserRepository userRepository) {
@@ -31,7 +33,7 @@ public class AuthService extends AbstractService<UserRepository, UserMapper> imp
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        return userRepository.findByUsername(username).orElseGet(Users::new);
+        return userRepository.findByUsername(username).orElseThrow();
     }
 
     public ResponseEntity<?> register(RegisterDTO dto) {
@@ -41,6 +43,7 @@ public class AuthService extends AbstractService<UserRepository, UserMapper> imp
             return new ResponseEntity<>("region not found", HttpStatus.BAD_REQUEST);
         }
         Users users = mapper.fromRegisterDTO(dto);
+        users.setPassword(passwordEncoder.encode(dto.getPassword()));
         Users save = repository.save(users);
         return ResponseEntity.ok(mapper.toDto(save));
     }
