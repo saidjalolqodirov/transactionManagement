@@ -43,7 +43,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/swagger-ui/index.html", "/auth/login", "/auth/register")
+                .antMatchers("/api/v1/swagger-ui/index.html", "/auth/login", "/auth/register")
                 .permitAll();
         http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
